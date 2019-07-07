@@ -163,7 +163,7 @@ class PlayerClass:
 class Fighter(PlayerClass):
 
     name = "Fighter"
-    max_health_points = 150
+    max_health_points = 250
     healing_points = 10
     attack_damage = 10
     key = 'f'
@@ -173,7 +173,7 @@ class Fighter(PlayerClass):
 class Mage(PlayerClass):
 
     name = "Mage"
-    max_health_points = 50
+    max_health_points = 125
     healing_points = 20
     attack_damage = 30
     key = 'm'
@@ -183,7 +183,7 @@ class Mage(PlayerClass):
 class Rogue(PlayerClass):
 
     name = "Rogue"
-    max_health_points = 100
+    max_health_points = 155
     healing_points = 15
     attack_damage = 20
     key = 'r'
@@ -209,6 +209,13 @@ class Hobgoblin(PlayerClass):
     max_health_points = 100
     attack_damage = 20
     key = 'h'
+
+class Wraith(PlayerClass):
+    name = "Wraith"
+    max_health_points = 200
+    attack_damage = 30
+    key = 'w'
+
 
 
 class Monster(Character):
