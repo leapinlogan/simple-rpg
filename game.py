@@ -1,4 +1,4 @@
-from player import Player, Fighter, Goblin, Monster
+from player import *
 
 
 class Game:
@@ -96,19 +96,28 @@ class Game:
         self._monster.set_foe(self._player)
         self._game_is_running = True
         self._show_game_status()
+        print(f"Welcome {self._player.get_name()}!!")
         self.show_player_status()
 
+    @classmethod
+    def _get_player_class(cls):
+        chooser = PlayerChooser("Select a Player Class", Fighter, Mage, Rogue)
+        class_ = chooser.get_choice()
+        return class_
+
     # create a player character
-    # TODO: allow player to select character class
     def _create_player(self):
         name = input("Enter the player's name:  ")
+        player_class = Game._get_player_class()
         # Add all game actions to actions choices for player character
-        self._player = Player(Fighter, name, Game.ShowStatus(self), Game.End(self), Game.Restart(self))
+        self._player = Player(player_class, name, Game.ShowStatus(self), Game.End(self), Game.Restart(self))
 
     # create a monster to battle
-    # TODO:  allow player to select monster type
+    # TODO:  create random monster type
     def _create_monster(self):
-        self._monster = Monster(Goblin, "Gobby")
+        chooser = MonsterChooser(Goblin, Hobgoblin)
+        monster_class_ = chooser.get_choice()
+        self._monster = Monster(monster_class_, "Gobby")
 
     # This is ued to check is the action is one of the game events
     # if you create a new game action, update this method

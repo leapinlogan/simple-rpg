@@ -4,13 +4,13 @@ import random
 class ActionChooser:
 
     # ActionChooser turns a list of actions into a map of key to action
-    def __init__(self, *actions):
+    def __init__(self, *selections):
         self._choices = {}
-        for action in actions:
-            key = action.get_key()
+        for selection in selections:
+            key = selection.get_key()
             if self._choices.get(key) is not None:
                 raise ValueError(f"Duplicate key '{key}' in ActionChooser!!")
-            self._choices[key] = action
+            self._choices[key] = selection
 
     def get_choice(self):
         pass
@@ -27,23 +27,27 @@ class MonsterChooser(ActionChooser):
 
 class PlayerChooser(ActionChooser):
 
+    def __init__(self, title, *selections):
+        super().__init__(*selections)
+        self._title = title
+
     # player character gets a on-screen prompt for an action
     # the list will typically contain in-game and meta-game actions.
     def get_choice(self):
         while True:
             # print a list of options and prompt for input until the player makes a valid selection
-            print("\n-------------  Enter your selection --------------")
-            for (key, action) in self._choices.items():
-                print(f"{key} ({action.get_prompt()}):")
-            choice = input('>> ')
+            print(f"\n-------------  {self._title} --------------")
+            for (key, choice) in self._choices.items():
+                print(f"{key} ({choice.get_prompt()}):")
+            curr_choice = input('>> ')
             print('--------------------------------------------------\n')
             try:
                 # player made a valid choice, return the action chosen
-                return self._choices[choice]
+                return self._choices[curr_choice]
             except KeyError:
                 # the user entered an invalid value
                 # catch the error here, print an error message and prompt again
-                print(f"[ERROR]:  Invalid input '{choice}'.  Please select from the menu.")
+                print(f"[ERROR]:  Invalid input '{curr_choice}'.  Please select from the menu.")
 
 
 class Character:
@@ -134,27 +138,77 @@ class Heal:
         return "h"
 
 
+class PlayerClass:
+
+    name = "Generic"
+    max_health_points = 0
+    healing_points = 0
+    attack_damage = 0
+    key = 'g'
+
+    @classmethod
+    def get_desc(cls):
+        print(f"Class name: {cls.name}, Max Health {cls.max_health_points}, Healing points:  {cls.healing_points}, Attack Damage: {cls.attack_damage}")
+
+    @classmethod
+    def get_key(cls):
+        return cls.key
+
+    @classmethod
+    def get_prompt(cls):
+        return cls.name
+
+
 # The Fighter class stats
-class Fighter:
+class Fighter(PlayerClass):
 
     name = "Fighter"
-    max_health_points = 100
-    healing_points = 20
+    max_health_points = 150
+    healing_points = 10
     attack_damage = 10
+    key = 'f'
+
+
+# The Mage class stats
+class Mage(PlayerClass):
+
+    name = "Mage"
+    max_health_points = 50
+    healing_points = 20
+    attack_damage = 30
+    key = 'm'
+
+
+# The Rogue class stats
+class Rogue(PlayerClass):
+
+    name = "Rogue"
+    max_health_points = 100
+    healing_points = 15
+    attack_damage = 20
+    key = 'r'
 
 
 class Player(Character):
 
     def __init__(self, player_type, name, *game_actions):
         # player characters can attack, heal, or perform game level actions
-        super().__init__(player_type, name, PlayerChooser(Attack(self), Heal(self), *game_actions))
+        super().__init__(player_type, name, PlayerChooser("Select an Action", Attack(self), Heal(self), *game_actions))
 
 
 # Goblin class stats
-class Goblin:
+class Goblin(PlayerClass):
     name = "Goblin"
     max_health_points = 50
     attack_damage = 10
+    key = 'g'
+
+
+class Hobgoblin(PlayerClass):
+    name = "Hobgoblin"
+    max_health_points = 100
+    attack_damage = 20
+    key = 'h'
 
 
 class Monster(Character):
