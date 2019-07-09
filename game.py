@@ -90,13 +90,21 @@ class Game:
 
     # on game (re)start, create a new set of players and start the match
     def start(self):
+        # creates the player
         self._create_player()
+        # creates the monster
         self._create_monster()
+        # sets the player as an enemy
         self._player.set_foe(self._monster)
+        # sets the monster as an enemy
         self._monster.set_foe(self._player)
+        # the game is now running
         self._game_is_running = True
+        # shows the status of the game
         self._show_game_status()
+        # prints the welcoming statement
         print(f"Welcome {self._player.get_name()}!!")
+        # shows the status of the player
         self.show_player_status()
 
     @classmethod
@@ -115,7 +123,7 @@ class Game:
     # create a monster to battle
     # TODO:  create random monster type
     def _create_monster(self):
-        chooser = MonsterChooser(Goblin, Hobgoblin)
+        chooser = MonsterChooser(Goblin, Hobgoblin, Wraith)
         monster_class_ = chooser.get_choice()
         self._monster = Monster(monster_class_, "Gobby")
 
@@ -128,8 +136,11 @@ class Game:
     # main method to run a game
     # player character goes first
     def run(self):
+        # initializes game
         self.start()
+        # the player goes first
         player_turn = True
+        # tells the game to run
         while self._game_is_running:
             # player and monster take turns
             if player_turn:
@@ -139,14 +150,19 @@ class Game:
             # if the character did not return an action, it means it can't do anything
             # this ends the game
             if chooser is not None:
+                # get the player or monster action choice
                 action = chooser.get_choice()
                 # if the action is a 'game' action, skip the monsters turn
                 if Game._is_game_action(action):
+                    # player goes first again
                     player_turn = True
                 else:
+                    # alternate turn
                     player_turn = not player_turn
+                # does the chosen action
                 action.do()
             else:
+                #  player or monster is dead
                 self.end()
 
 
